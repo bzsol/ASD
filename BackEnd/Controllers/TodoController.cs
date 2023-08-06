@@ -8,31 +8,31 @@ namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DaysController : ControllerBase
+    public class TodoController : ControllerBase
     {
         private readonly ApiDbContext _context;
-        public DaysController(ApiDbContext context)
+        public TodoController(ApiDbContext context)
         {
             _context = context;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<Day>> Get()
+        public ActionResult<IEnumerable<Todo>> Get()
         {
-            return _context.days;
+            return _context.todos;
         }
         [HttpPost]
-        public ActionResult Post([FromBody] Day day)
+        public ActionResult Post([FromBody] Todo todo)
         {
-            _context.days.Add(day);
+            _context.todos.Add(todo);
             _context.SaveChanges();
             return Ok();
         }
         [HttpDelete("{id}")]
         public ActionResult Delete(int id) {
-          var wanted = _context.days.FirstOrDefault(x => x.id.Equals(id));
+          var wanted = _context.todos.FirstOrDefault(x => x.id.Equals(id));
             if (wanted != null)
             {
-                _context.days.Remove(wanted);
+                _context.todos.Remove(wanted);
                 _context.SaveChanges();
                 return Ok();
             }
@@ -43,15 +43,15 @@ namespace BackEnd.Controllers
          
         }
         [HttpPut]
-        public ActionResult Put([FromBody] Day day) {
-            var wanted = _context.days.FirstOrDefault(x => x.id.Equals(day.id));
+        public ActionResult Put([FromBody] Todo todo) {
+            var wanted = _context.todos.FirstOrDefault(x => x.id.Equals(todo.id));
             if (wanted != null)
             {
-                wanted.date = day.date;
-                wanted.description = day.description;
-                wanted.happiness = day.happiness;
-                wanted.motto = day.motto;
-                _context.days.Update(wanted);
+                wanted.date = todo.date;
+                wanted.description = todo.description;
+                wanted.level = todo.level;
+                wanted.title = todo.title;
+                _context.todos.Update(wanted);
                 return Ok();
             }
             else {

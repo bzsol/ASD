@@ -1,15 +1,21 @@
+version: "1.0"
+name: todo-app-docker
 services:
   db:
    image: postgres
    container_name: psql_db
+   volumes:
+    - pgdata:/var/lib/postgresql/data
    restart: always
    environment:
       - POSTGRES_USER = postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_HOST=localhost
-      - POSTGRES_DB = days
+      - POSTGRES_HOST=database
+      - POSTGRES_DB = todos
    ports:
-     - 5432:5432
+      - 5432:5432
+   networks: 
+      - todo-network
 
   fe:
     build: ./FrontEnd/
@@ -18,8 +24,17 @@ services:
 
   be:
     build: ./BackEnd/
-        
-    ports:
-      - 5000:80
     depends_on:
      - db
+    ports:
+     - 5000:80
+    networks: 
+     - todo-network
+    links:
+     - db
+networks: 
+    todo-network:
+        driver: bridge
+
+volumes:
+    pgdata:

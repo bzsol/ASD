@@ -5,7 +5,7 @@ namespace BackEnd.Data
 {
     public class ApiDbContext : DbContext
     {
-        public virtual  DbSet<Day> days { get; set; }
+        public virtual  DbSet<Todo> todos { get; set; }
 
 
         public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options)
