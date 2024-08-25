@@ -42,9 +42,9 @@ namespace BackEnd.Controllers
                 
          
         }
-        [HttpPut]
-        public ActionResult Put([FromBody] Todo todo) {
-            var wanted = _context.todos.FirstOrDefault(x => x.id.Equals(todo.id));
+        [HttpPut("{id}")]
+        public ActionResult Put(int id,[FromBody] Todo todo) {
+            var wanted = _context.todos.FirstOrDefault(x => x.id.Equals(id));
             if (wanted != null)
             {
                 wanted.date = todo.date;
@@ -52,6 +52,7 @@ namespace BackEnd.Controllers
                 wanted.level = todo.level;
                 wanted.title = todo.title;
                 _context.todos.Update(wanted);
+                _context.SaveChanges();
                 return Ok();
             }
             else {

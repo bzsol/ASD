@@ -1,35 +1,62 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.tsx
+import React, { useEffect, useState } from 'react';
+import { Todo } from './types/Todo';
+import { getTodos, addTodo, updateTodo, deleteTodo } from './services/api';
+import TodoList from './components/TodoList.tsx';
+import TodoForm from './components/TodoForm.tsx';
 
-function App() {
-  const [count, setCount] = useState(0)
+
+const App: React.FC = () => {
+  const [todos, setTodos] = useState<Todo[]>([]);
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  const fetchTodos = async () => {
+    try {
+      const response = await getTodos();
+      setTodos(response.data);
+    } catch (error) {
+      console.error('Error fetching todos:', error);
+    }
+  };
+
+  const handleAddTodo = async (newTodo: Omit<Todo, 'id'>) => {
+    try {
+      await addTodo(newTodo);
+      fetchTodos();
+    } catch (error) {
+      console.error('Error adding todo:', error);
+    }
+  };
+
+  const handleUpdateTodo = async (id: number, updatedTodo: Partial<Todo>) => {
+    try {
+      await updateTodo(id, updatedTodo);
+      fetchTodos();
+    } catch (error) {
+      console.error('Error updating todo:', error);
+    }
+  };
+
+  const handleDeleteTodo = async (id: number) => {
+    try {
+      await deleteTodo(id);
+      fetchTodos();
+    } catch (error) {
+      console.error('Error deleting todo:', error);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <h1>Todo List</h1>
+      <TodoForm onAddTodo={handleAddTodo} />
+      <TodoList todos={todos} onUpdateTodo={handleUpdateTodo} onDeleteTodo={handleDeleteTodo} />
+    </div>
+  );
+};
 
-export default App
+export default App;
+
