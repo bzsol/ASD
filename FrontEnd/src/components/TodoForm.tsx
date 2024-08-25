@@ -1,6 +1,8 @@
-// src/components/TodoForm.tsx
 import React, { useState } from 'react';
 import { Todo } from '../types/Todo';
+import { Button } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 interface TodoFormProps {
   onAddTodo: (newTodo: Omit<Todo, 'id'>) => void;
@@ -27,34 +29,55 @@ const TodoForm: React.FC<TodoFormProps> = ({ onAddTodo }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Level"
-        value={level}
-        onChange={(e) => setLevel(parseInt(e.target.value))}
-        min="1"
-      />
-      <button type="submit">Add Todo</button>
-    </form>
+    <Form style={{
+      display: 'block',
+      width: 700,
+      padding: 30,
+    }} onSubmit={handleSubmit}>
+      <InputGroup className="mb-3">
+        <InputGroup.Text id="basic-addon1">Title:</InputGroup.Text>
+        <Form.Control
+          placeholder="Buy Groceries"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)} // Update title state
+        />
+      </InputGroup>
+      <InputGroup className="mb-3">
+        <InputGroup.Text id="basic-addon1">Description:</InputGroup.Text>
+        <Form.Control
+          placeholder="2 apples"
+          aria-label="Description"
+          aria-describedby="basic-addon1"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)} // Update description state
+        />
+      </InputGroup>
+      <InputGroup className="mb-3">
+        <InputGroup.Text id="basic-addon1">Date:</InputGroup.Text>
+        <Form.Control
+          type="date"
+          name="datepic"
+          placeholder="DateRange"
+          value={date}
+          onChange={(e) => setDate(e.target.value)} // Update date state
+        />
+      </InputGroup>
+      <InputGroup className="mb-3">
+        <InputGroup.Text id="basic-addon1">Level:</InputGroup.Text>
+        <Form.Control
+          type="number"
+          name="level"
+          id="replyNumber" 
+          min="0" 
+          data-bind="value:replyNumber"
+          value={level}
+          onChange={(e) => setLevel(Number(e.target.value))} // Update level state
+        />
+      </InputGroup>
+      <Button variant="primary" type="submit">
+        Submit
+      </Button>
+    </Form>
   );
 };
 

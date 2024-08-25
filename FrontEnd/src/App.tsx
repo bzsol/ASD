@@ -4,7 +4,7 @@ import { Todo } from './types/Todo';
 import { getTodos, addTodo, updateTodo, deleteTodo } from './services/api';
 import TodoList from './components/TodoList.tsx';
 import TodoForm from './components/TodoForm.tsx';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);

@@ -1,6 +1,7 @@
 // src/components/TodoList.tsx
 import React from 'react';
 import { Todo } from '../types/Todo';
+import { Button, Table } from 'react-bootstrap';
 
 interface TodoListProps {
   todos: Todo[];
@@ -8,17 +9,29 @@ interface TodoListProps {
   onDeleteTodo: (id: number) => void;
 }
 
-const TodoList: React.FC<TodoListProps> = ({ todos, onUpdateTodo, onDeleteTodo }) => {
+const TodoList: React.FC<TodoListProps> = ({ todos, onDeleteTodo }) => {
   return (
-    <ul>
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Date</th>
+          <th>Level</th>
+        </tr>
+      </thead>
+      <tbody>
       {todos.map((todo) => (
-        <li key={todo.id}>
-          <span>{todo.title}</span> - <span>{todo.description}</span> - <span>{todo.date}</span>
-          <button onClick={() => onUpdateTodo(todo.id, { ...todo, level: todo.level + 1 })}>Increase Level</button>
-          <button onClick={() => onDeleteTodo(todo.id)}>Delete</button>
-        </li>
+        <tr key={todo.id}>
+          <td>{todo.title}</td>
+          <td>{todo.description}</td>
+          <td>{todo.date}</td>
+          <td>{todo.level}</td>
+          <td><Button variant='danger' onClick={() => onDeleteTodo(todo.id)}>Delete</Button></td>
+        </tr>
       ))}
-    </ul>
+      </tbody>
+    </Table>
   );
 };
 
