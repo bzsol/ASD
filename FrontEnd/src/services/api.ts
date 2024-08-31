@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Todo } from '../types/Todo.ts';
 
-const API_URL = 'http://localhost:8080/api/Todo';
+const API_URL = 'http://localhost:8088/api/Todo';
 
 export const getTodos = () => axios.get<Todo[]>(API_URL);
 
