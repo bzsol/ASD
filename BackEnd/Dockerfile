@@ -11,5 +11,5 @@ RUN dotnet publish -c Release -o /publish
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 as runtime
 WORKDIR /publish
 COPY --from=build-env /publish .
-EXPOSE 8080
+EXPOSE 5000
 ENTRYPOINT ["dotnet", "BackEnd.dll"]
