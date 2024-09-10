@@ -24,7 +24,7 @@ services:
     networks: 
       - todo-network
     labels:
-      - "traefik.http.routers.backend.rule=Host(`app.localhost`) && PathPrefix(`/api/Todo`)"
+      - "traefik.http.routers.backend.rule=Host(`local.node2.zberecz.xyz`) && PathPrefix(`/api/Todo`)"
 
   # Frontend Service
   fe:
@@ -35,32 +35,57 @@ services:
     networks: 
       - todo-network
     labels:
-      - "traefik.http.routers.frontend.rule=Host(`app.localhost`)"
+      - "traefik.http.routers.frontend.rule=Host(`local.node2.zberecz.xyz`)"
 
 
   traefik:
     image: traefik:3.1
     networks:
       - todo-network
+      - traefik_public
     command:
       #- --providers.docker=true
       - --api.insecure=true
       - --providers.docker
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.cfresolver.acme.dnschallenge=true"
+      - "--certificatesresolvers.cfresolver.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.cfresolver.acme.email=zsolt.berecz@mailbox.unideb.hu"
+      - "--certificatesresolvers.cfresolver.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesResolvers.cfresolver.acme.dnsChallenge.resolvers=1.1.1.1:53,1.0.0.1:53"
+    environment:
+      - CF_DNS_API_TOKEN=rpHJpQWXSaLNFWs7BpqJbH8rISa7OwtYMHK82dY3
     ports:
       # The HTTP port
       - "80:80"
       - "443:443"
       - "8080:8080"
     volumes:
-      # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     labels:
       - traefik.enable=true  
   
+  whoami:
+      image: "traefik/whoami"
+      container_name: "simple-service"
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.whoami.rule: "Host(`app.localhost`)"
+        traefik.http.routers.whoami.entrypoints: "websecure"
+        traefik.http.routers.whoami.tls.certresolver: "cfresolver"
+      networks: 
+        - traefik_public
+
 
 networks: 
   todo-network:
     driver: bridge
+  traefik_public:
+    ipam:
+      config:
+        - subnet: "192.168.100.0/24"
 
 volumes:
   pgdata:
