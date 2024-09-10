@@ -49,6 +49,7 @@ services:
     ports:
       # The HTTP port
       - "80:80"
+      - "443:443"
       - "8080:8080"
     volumes:
       # So that Traefik can listen to the Docker events
