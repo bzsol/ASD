@@ -10,44 +10,24 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = "";
 
-if (!string.IsNullOrEmpty(builder.Configuration.GetConnectionString("PostgreSQL"))) {
-    connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
-}
-else {
-    throw new InvalidOperationException("There's no connection string");
-}
+var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? throw new InvalidOperationException("DB_HOST is not set");
+var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? throw new InvalidOperationException("DB_USER is not set");
+var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? throw new InvalidOperationException("DB_PASSWORD is not set");
+var dbSchema = Environment.GetEnvironmentVariable("DB_SCHEMA") ?? throw new InvalidOperationException("DB_SCHEMA is not set");
 
-
-var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
-var dbUser = Environment.GetEnvironmentVariable("DB_USER");
-var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
-var dbSchema = Environment.GetEnvironmentVariable("DB_SCHEMA");
-
-
-if (string.IsNullOrEmpty(dbHost) || string.IsNullOrEmpty(dbUser) || string.IsNullOrEmpty(dbPassword) || string.IsNullOrEmpty(dbSchema))
-{
-    
-    var missingVariables = new List<string>();
-    if (string.IsNullOrEmpty(dbHost)) missingVariables.Add("DB_HOST");
-    if (string.IsNullOrEmpty(dbUser)) missingVariables.Add("DB_USER");
-    if (string.IsNullOrEmpty(dbPassword)) missingVariables.Add("DB_PASSWORD");
-    if (string.IsNullOrEmpty(dbSchema)) missingVariables.Add("DB_SCHEMA");
-
-    
-    throw new InvalidOperationException($"Missing environment variables: {string.Join(", ", missingVariables)}");
-}
-
-
-connectionString = connectionString
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     .Replace("{DB_HOST}", dbHost)
     .Replace("{DB_USER}", dbUser)
     .Replace("{DB_PASSWORD}", dbPassword)
     .Replace("{DB_SCHEMA}", dbSchema);
 
 Console.WriteLine(connectionString);
-builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ApiDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString(connectionString)));
+
+
+builder.Services.AddDbContext<ApiDbContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString(connectionString)));
+
 
 var app = builder.Build();
 
