@@ -25,6 +25,9 @@ var connectionString = ""
 
 Console.WriteLine(connectionString);
 
+Console.WriteLine($"DB_PASSWORD: {dbPassword}");
+
+
 var connString = "Host=postgres-srv;Port=5432;Database=postgres;Username=postgres;Password=password;";
 using (var connection = new NpgsqlConnection(connString))
 {
