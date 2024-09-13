@@ -1,5 +1,6 @@
 using BackEnd.Data;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,21 @@ var connectionString = ""
     .Replace("{DB_SCHEMA}", dbSchema);
 
 Console.WriteLine(connectionString);
+
+var connString = "Host=postgres-srv;Port=5432;Database=postgres;Username=postgres;Password=password;";
+using (var connection = new NpgsqlConnection(connString))
+{
+    try
+    {
+        connection.Open();
+        Console.WriteLine("Connection to the database succeeded!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error connecting to the database: {ex.Message}");
+    }
+}
+
 
 
 builder.Services.AddDbContext<ApiDbContext>(opt =>
