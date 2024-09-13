@@ -46,7 +46,7 @@ connectionString = connectionString
     .Replace("{DB_PASSWORD}", dbPassword)
     .Replace("{DB_SCHEMA}", dbSchema);
 
-
+Console.WriteLine(connectionString);
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ApiDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString(connectionString)));
 
 var app = builder.Build();
