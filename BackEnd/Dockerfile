@@ -15,6 +15,5 @@ RUN dotnet publish -c Release -o /publish
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 as runtime
 WORKDIR /publish
 COPY --from=build-env /publish .
-ENV ASPNETCORE_URLS=http://+:5000
-EXPOSE 5000
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "BackEnd.dll"]
