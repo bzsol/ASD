@@ -1,5 +1,9 @@
 
-# syntax=docker/dockerfile:1
+ENV DB_HOST
+ENV DB_USER
+ENV DB_PASSWORD
+ENV DB_SCHEMA
+
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 as build-env
 WORKDIR /src
