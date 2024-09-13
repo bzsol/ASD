@@ -16,7 +16,7 @@ var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? throw new InvalidO
 var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? throw new InvalidOperationException("DB_PASSWORD is not set");
 var dbSchema = Environment.GetEnvironmentVariable("DB_SCHEMA") ?? throw new InvalidOperationException("DB_SCHEMA is not set");
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+var connectionString = ""
     .Replace("{DB_HOST}", dbHost)
     .Replace("{DB_USER}", dbUser)
     .Replace("{DB_PASSWORD}", dbPassword)
@@ -26,7 +26,7 @@ Console.WriteLine(connectionString);
 
 
 builder.Services.AddDbContext<ApiDbContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString(connectionString)));
+    opt.UseNpgsql(builder.Configuration.GetConnectionString(builder.Configuration.GetConnectionString("DefaultConnection"))));
 
 
 var app = builder.Build();
