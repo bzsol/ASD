@@ -1,6 +1,5 @@
 using BackEnd.Data;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +16,7 @@ var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? throw new InvalidO
 var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? throw new InvalidOperationException("DB_PASSWORD is not set");
 var dbSchema = Environment.GetEnvironmentVariable("DB_SCHEMA") ?? throw new InvalidOperationException("DB_SCHEMA is not set");
 
-var connectionString = ""
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     .Replace("{DB_HOST}", dbHost)
     .Replace("{DB_USER}", dbUser)
     .Replace("{DB_PASSWORD}", dbPassword)
@@ -25,27 +24,9 @@ var connectionString = ""
 
 Console.WriteLine(connectionString);
 
-Console.WriteLine($"DB_PASSWORD: {dbPassword}");
 
-
-var connString = "Host=postgres-srv;Port=5432;Database=postgres;Username=postgres;Password=password;";
-using (var connection = new NpgsqlConnection(connString))
-{
-    try
-    {
-        connection.Open();
-        Console.WriteLine("Connection to the database succeeded!");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error connecting to the database: {ex.Message}");
-    }
-}
-
-
-
-builder.Services.AddDbContext<ApiDbContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString(builder.Configuration.GetConnectionString("DefaultConnection"))));
+builder.Services.AddDbContext<ApiDbContext>(opt => 
+    opt.UseNpgsql(builder.Configuration.GetConnectionString(connectionString)));
 
 
 var app = builder.Build();
