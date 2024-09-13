@@ -1,11 +1,11 @@
 
-ENV DB_HOST
-ENV DB_USER
-ENV DB_PASSWORD
-ENV DB_SCHEMA
-
-
 FROM mcr.microsoft.com/dotnet/sdk:8.0 as build-env
+
+ENV DB_HOST=
+ENV DB_USER=
+ENV DB_PASSWORD=
+ENV DB_SCHEMA=
+
 WORKDIR /src
 COPY ./*.csproj .
 RUN dotnet restore
