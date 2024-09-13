@@ -10,23 +10,26 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Retrieve the connection string with placeholders
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? throw new InvalidOperationException("DB_HOST is not set");
-var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? throw new InvalidOperationException("DB_USER is not set");
-var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? throw new InvalidOperationException("DB_PASSWORD is not set");
-var dbSchema = Environment.GetEnvironmentVariable("DB_SCHEMA") ?? throw new InvalidOperationException("DB_SCHEMA is not set");
+// Retrieve environment variables or configuration values
+var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
+var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "password";
+var dbSchema = Environment.GetEnvironmentVariable("DB_SCHEMA") ?? "postgres";
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+// Replace placeholders with actual values
+connectionString = connectionString
     .Replace("{DB_HOST}", dbHost)
     .Replace("{DB_USER}", dbUser)
     .Replace("{DB_PASSWORD}", dbPassword)
     .Replace("{DB_SCHEMA}", dbSchema);
 
-Console.WriteLine(connectionString);
+// Use the connection string to configure DbContext
+builder.Services.AddDbContext<ApiDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
-
-builder.Services.AddDbContext<ApiDbContext>(opt => 
-    opt.UseNpgsql(builder.Configuration.GetConnectionString(connectionString)));
 
 
 var app = builder.Build();
