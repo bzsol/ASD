@@ -37,19 +37,33 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApiDbContext>();
 
-    // Define your raw SQL command to create the table
-    var createTableSql = @"
-        CREATE TABLE IF NOT EXISTS todos (
-            id SERIAL PRIMARY KEY,
-            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            title VARCHAR(255) NOT NULL,
-            description TEXT,
-            level INTEGER CHECK (level >= 0)
+    
+    var tableExistsSql = @"
+        SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            AND table_name = 'todos'
         );";
 
     
-    dbContext.Database.ExecuteSqlRaw(createTableSql);
+    var tableExists = dbContext.Database.ExecuteSqlRaw(tableExistsSql) == 1;
+
+    
+    if (!tableExists)
+    {
+        var createTableSql = @"
+            CREATE TABLE IF NOT EXISTS todos (
+                id SERIAL PRIMARY KEY,
+                date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                title VARCHAR(255) NOT NULL,
+                description TEXT,
+                level INTEGER CHECK (level >= 0)
+            );";
+
+        dbContext.Database.ExecuteSqlRaw(createTableSql);
+    }
 }
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
