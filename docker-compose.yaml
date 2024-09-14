@@ -6,7 +6,6 @@ services:
     container_name: db
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -17,6 +16,11 @@ services:
   be:
     container_name: be
     build: ./BackEnd/
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_SCHEMA: postgres
     depends_on:
       - db
     networks: 
@@ -25,6 +29,8 @@ services:
   fe:
     container_name: fe
     build: ./FrontEnd/
+    environment:
+      API_URL: "/api/Todo"
     depends_on:
       - be
     networks: 
