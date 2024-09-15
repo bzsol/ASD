@@ -33,23 +33,7 @@ builder.Services.AddDbContext<ApiDbContext>(options =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApiDbContext>();
 
-    // Define your raw SQL command to create the table
-    var createTableSql = @"
-        CREATE TABLE IF NOT EXISTS todos (
-            id SERIAL PRIMARY KEY,
-            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            title VARCHAR(255) NOT NULL,
-            description TEXT,
-            level INTEGER CHECK (level >= 0)
-        );";
-
-    
-    dbContext.Database.ExecuteSqlRaw(createTableSql);
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
