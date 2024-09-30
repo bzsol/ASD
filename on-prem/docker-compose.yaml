@@ -43,7 +43,7 @@ services:
       - be
       - fe
     volumes:
-      - ../nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../nginx_https.conf:/etc/nginx/nginx.conf:ro
       - ./cert.crt:/etc/nginx/ssl/cert.crt:ro
       - ./cert.key:/etc/nginx/ssl/cert.key:ro
     ports:
