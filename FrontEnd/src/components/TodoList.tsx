@@ -27,7 +27,7 @@ const TodoList: React.FC<TodoListProps> = ({ todos, onDeleteTodo }) => {
           <td>{todo.description}</td>
           <td>{todo.date}</td>
           <td>{todo.level}</td>
-          <td><Button variant='danger' onClick={() => onDeleteTodo(todo.id)}>Delete</Button></td>
+          <td><Button variant='warning' onClick={() => onDeleteTodo(todo.id)}>Delete</Button></td>
         </tr>
       ))}
       </tbody>
